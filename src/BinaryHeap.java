@@ -9,7 +9,7 @@ import be.ac.ua.ansymo.adbc.annotations.requires;
 	"$this.heap[0] == null"
 	})
 
-public class BinaryHeap<ElementType extends Comparable<ElementType>,KeyType extends Comparable<KeyType>>
+public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>>
 implements PriorityQueue<ElementType, KeyType>{
 	
 	private Node<ElementType, KeyType>[] heap;
@@ -59,9 +59,8 @@ implements PriorityQueue<ElementType, KeyType>{
 		})
 	@ensures({
 		"$this.size == $old($this.size) + 1",
-		"$this.contains(new Node<>(el,key)) == true "
-		
-	})
+		//"$this.contains(new Node<>(el,key)) == true "
+		})
 	public void insert(ElementType el,KeyType key){
 		
 		Node<ElementType, KeyType> newNode = new Node<>(el,key);
@@ -84,16 +83,16 @@ implements PriorityQueue<ElementType, KeyType>{
 		return;
 	}
 	
-	private boolean contains(Node<ElementType, KeyType> InputNode) {
-		for(Node<ElementType, KeyType> node: heap) {
-			if(node != null) {
-				if(node.key.compareTo(InputNode.key) == 0 && node.data.compareTo(InputNode.data)==0 ) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	private boolean contains(Node<ElementType, KeyType> InputNode) {
+//		for(Node<ElementType, KeyType> node: heap) {
+//			if(node != null) {
+//				if(node.key.compareTo(InputNode.key) == 0 && node.data.compareTo(InputNode.data)==0 ) {
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 
 	public boolean isEmpty() {
 		return this.size==0;
