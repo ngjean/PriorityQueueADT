@@ -1,15 +1,30 @@
+import be.ac.ua.ansymo.adbc.annotations.ensures;
+import be.ac.ua.ansymo.adbc.annotations.invariant;
+import be.ac.ua.ansymo.adbc.annotations.requires;
 
-public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>> implements PriorityQueue<ElementType, KeyType>{
+@invariant ({
+	"$this.capacity>=2",
+	"$this.size >=0 ",
+	"$this.size < this.capacity",
+	"$this.heap[0] == null"
+	})
+
+public class BinaryHeap<ElementType extends Comparable<ElementType>,KeyType extends Comparable<KeyType>>
+implements PriorityQueue<ElementType, KeyType>{
 	
-	Node<ElementType, KeyType>[] heap;
-	int size;
-	int capacity;
+	private Node<ElementType, KeyType>[] heap;
+	private int size;
+	private int capacity;
 	
-	//precondition capacity >=2, skip index 0
+	@requires({"true"})
+	@ensures({"$this.heap != null"})
 	public BinaryHeap() {
 		
-		this(2);
+		this(10);
 	}
+	
+	@requires({"capacity >= 2"})
+	@ensures({"$this.heap != null"})
 	public BinaryHeap(int capacity) {
 		
 		this.capacity = capacity;
@@ -18,17 +33,35 @@ public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>> implem
 		
 	}
 	
+	@requires({"true"})
+	@ensures({"$this.result>=0"})
 	public int getSize(){
 		
 		return this.size;
 	}
 	
+	@requires({"true"})
+	@ensures({"$this.result>=2"})
 	public int getCapacity(){
 		
 		return this.capacity;
 	}
+	@requires({"true"})
+	@ensures({"$this.result != null"})
+	public Node<ElementType, KeyType>[] getHeap() {
+		
+		return this.heap;
+	}
 	
-	
+	@requires({
+		"key != null",
+		"$this.isFull() == false"
+		})
+	@ensures({
+		"$this.size == $old($this.size) + 1",
+		"$this.contains(new Node<>(el,key)) == true "
+		
+	})
 	public void insert(ElementType el,KeyType key){
 		
 		Node<ElementType, KeyType> newNode = new Node<>(el,key);
@@ -38,7 +71,7 @@ public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>> implem
 			++size;
 			return;
 		}
-		if(this.size==this.capacity-1) {
+		if(this.isFull()) {
 			doubleSizeArray();
 		}
 		
@@ -49,6 +82,25 @@ public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>> implem
 		heap[insertPosition]= newNode;
 		
 		return;
+	}
+	
+	private boolean contains(Node<ElementType, KeyType> InputNode) {
+		for(Node<ElementType, KeyType> node: heap) {
+			if(node != null) {
+				if(node.key.compareTo(InputNode.key) == 0 && node.data.compareTo(InputNode.data)==0 ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public boolean isEmpty() {
+		return this.size==0;
+	}
+	
+	public boolean isFull() {
+		return this.size==this.capacity-1;
 	}
 	
 	private void doubleSizeArray(){
@@ -128,5 +180,4 @@ public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>> implem
 			this.key = key;
 		}
 	}
-	
 }
