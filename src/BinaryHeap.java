@@ -93,14 +93,17 @@ implements PriorityQueue<ElementType, KeyType>{
 //	@ensures({"$this.result == true"})
 	public boolean isSorted(){
 		for(int i = 1; i< heap.length;i++){
+			
 			if(heap[i] == null) {
 				break;
 			}
 			else {
-				if(heap[i*2] != null|| heap[i].key.compareTo(heap[i*2].key)>0) {
+				if((i*2)<heap.length && heap[i*2] != null
+						&& heap[i].key.compareTo(heap[i*2].key)>0) {
 					return false;
 				}
-				if(heap[(i*2)+1] != null || heap[i].key.compareTo(heap[(i*2)+1].key)>0) {
+				if((i*2)+1<heap.length
+						&& heap[(i*2)+1] != null && heap[i].key.compareTo(heap[(i*2)+1].key)>0) {
 					return false;
 				}
 			}
@@ -123,8 +126,6 @@ implements PriorityQueue<ElementType, KeyType>{
 		Node<ElementType, KeyType>[] newArray = (Node<ElementType, KeyType>[]) new Node <?,?>[this.heap.length * 2];
 		for(int i = 0;i < this.heap.length;i++) {
 			newArray[i] = this.heap[i];
-			
-			System.out.println(i);
 		}
 		this.heap = newArray;
 		
