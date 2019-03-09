@@ -3,9 +3,9 @@ import be.ac.ua.ansymo.adbc.annotations.invariant;
 import be.ac.ua.ansymo.adbc.annotations.requires;
 
 //@invariant ({
-//	"$this.capacity>=2",
+//	"$this.capacity>=1",
 //	"$this.size >=0 ",
-//	"$this.size < this.capacity",
+//	"$this.size <= $this.capacity",
 //	"$this.heap[0] == null"
 //	})
 
