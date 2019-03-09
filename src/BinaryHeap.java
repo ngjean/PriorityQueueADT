@@ -144,7 +144,7 @@ implements PriorityQueue<ElementType, KeyType>{
 		}
 		else {
 			
-			if(heap[leftChildIndex].key.compareTo(heap[rightChildIndex].key)< 1){
+			if(heap[leftChildIndex].key.compareTo(heap[rightChildIndex].key)<= 0){
 				
 				minIndex = leftChildIndex;
 				
@@ -154,7 +154,7 @@ implements PriorityQueue<ElementType, KeyType>{
 				minIndex = rightChildIndex;
 			}
 		}
-		if(heap[n].key.compareTo(heap[minIndex].key) > 1) {
+		if(heap[n].key.compareTo(heap[minIndex].key) >= 0) {
 			
 			tempData = heap[n];
 			heap[n] = heap[minIndex];
