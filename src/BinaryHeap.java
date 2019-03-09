@@ -67,14 +67,13 @@ implements PriorityQueue<ElementType, KeyType>{
 		
 		Node<ElementType, KeyType> newNode = new Node(el,key);
 		if(this.size==0) {
-			System.out.println("start"+newNode.getKey());
 			heap[1] = newNode;
 			++size;
 			return;
 		}
-		System.out.println(this.isFull());
+		
 		if(this.size == heap.length-1) {
-			System.out.println("exceeded capacity, doubling size of array");
+			
 			doubleSizeArray();
 		}
 		int insertPosition = ++size;
@@ -87,7 +86,6 @@ implements PriorityQueue<ElementType, KeyType>{
 		}
 		
 		heap[insertPosition]= newNode;
-		System.out.println(newNode.getKey());
 		
 		return;
 	}
