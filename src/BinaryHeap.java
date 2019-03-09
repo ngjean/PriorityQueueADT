@@ -2,12 +2,12 @@ import be.ac.ua.ansymo.adbc.annotations.ensures;
 import be.ac.ua.ansymo.adbc.annotations.invariant;
 import be.ac.ua.ansymo.adbc.annotations.requires;
 
-@invariant ({
-	"$this.capacity>=2",
-	"$this.size >=0 ",
-	"$this.size < this.capacity",
-	"$this.heap[0] == null"
-	})
+//@invariant ({
+//	"$this.capacity>=2",
+//	"$this.size >=0 ",
+//	"$this.size < this.capacity",
+//	"$this.heap[0] == null"
+//	})
 
 public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>>
 implements PriorityQueue<ElementType, KeyType>{
@@ -16,77 +16,81 @@ implements PriorityQueue<ElementType, KeyType>{
 	private int size;
 	private int capacity;
 	
-	@requires({"true"})
-	@ensures({"$this.heap != null"})
+//	@requires({"true"})
+//	@ensures({"$this.heap != null"})
 	public BinaryHeap() {
 		
 		this(10);
 	}
 	
-	@requires({"capacity >= 2"})
-	@ensures({"$this.heap != null"})
+//	@requires({"capacity >= 2"})
+//	@ensures({"$this.heap != null"})
 	public BinaryHeap(int capacity) {
 		
 		this.capacity = capacity;
-		heap = (Node<ElementType, KeyType>[]) new Node <?,?>[capacity];
+		this.heap = (Node<ElementType, KeyType>[]) new Node <?,?>[capacity+1];
 		this.size = 0;
 		
 	}
 	
-	@requires({"true"})
-	@ensures({"$this.result>=0"})
+//	@requires({"true"})
+	//@ensures({"$this.result>=0"})
 	public int getSize(){
 		
 		return this.size;
 	}
 	
-	@requires({"true"})
-	@ensures({"$this.result>=2"})
+//	@requires({"true"})
+	//@ensures({"$this.result>=2"})
 	public int getCapacity(){
 		
 		return this.capacity;
 	}
-	@requires({"true"})
-	@ensures({"$this.result != null"})
+//	@requires({"true"})
+//	@ensures({"$this.result != null"})
 	public Node<ElementType, KeyType>[] getHeap() {
 		
 		return this.heap;
 	}
 	
-	@requires({
-		"key != null",
-		"$this.isFull() == false",
-		"$this.isSorted() == true"
-		})
-	@ensures({
-		"$this.size == $old($this.size) + 1",
-		"$this.heap[size] != null ",
-		"$this.isSorted() == true"
-		})
+//	@requires({
+//		"key != null",
+//		"$this.isFull() == false",
+//		"$this.isSorted() == true"
+//		})
+//	@ensures({
+//		"$this.size == $old($this.size) + 1",
+//		"$this.heap[size] != null ",
+//		"$this.isSorted() == true"
+//		})
 	public void insert(ElementType el,KeyType key){
 		
-		Node<ElementType, KeyType> newNode = new Node<>(el,key);
-		
+		Node<ElementType, KeyType> newNode = new Node(el,key);
 		if(this.size==0) {
+			
 			heap[1] = newNode;
 			++size;
 			return;
 		}
 		if(this.isFull()) {
+			System.out.println("exceeded capacity, doubling size of array");
 			doubleSizeArray();
 		}
-		
 		int insertPosition = ++size;
-		for(; newNode.key.compareTo(heap[insertPosition/2].key)<0;insertPosition = insertPosition/2 ) {
-			heap[insertPosition]=heap[insertPosition/2];
+		while(newNode.getKey().compareTo(heap[insertPosition/2].getKey())<0) {
+			heap[insertPosition] = heap[insertPosition/2];
+			insertPosition = insertPosition/2;
+			if(insertPosition==1){
+				break;
+			}
 		}
 		heap[insertPosition]= newNode;
 		
 		return;
 	}
 	
-	@requires({"true"})
-	@ensures({"$this.result == true"})
+//	@requires({"true"})
+//	@ensures({"$this.result == true"})
 	public boolean isSorted(){
 		for(int i = 1; i< heap.length;i++){
 			if(heap[i] == null) {
@@ -110,31 +114,31 @@ implements PriorityQueue<ElementType, KeyType>{
 	}
 	
 	public boolean isFull() {
-		return this.size==this.capacity-1;
+		return this.size==this.capacity;
 	}
-	@requires({"$this.isFull() == true"})
-	@ensures({"$this.heap.length == $old(this.heap.length)*2"})
+//	@requires({"$this.isFull() == true"})
+//	@ensures({"$this.heap.length == $old(this.heap.length)*2"})
 	private void doubleSizeArray(){
 		
-		Node<ElementType, KeyType>[] newArray = (Node<ElementType, KeyType>[]) new Node <?,?>[capacity * 2];
-		
-		for(int i = 0;i<= heap.length;i++) {
+		Node<ElementType, KeyType>[] newArray = (Node<ElementType, KeyType>[]) new Node <?,?>[this.heap.length * 2];
+		for(int i = 0;i < this.heap.length;i++) {
 			newArray[i] = this.heap[i];
-			this.heap[i] = null;
+			
+			System.out.println(i);
 		}
 		this.heap = newArray;
 		
 		return;
 	}
-	@requires({
-		"$this.isEmpty() == false",
-		"$this.isSorted() == true"
-		})
-	@ensures({
-		"$this.size == $old($this.size) - 1",
-		"$this.heap[size] == null ",
-		"$this.isSorted() == true"
-		})
+//	@requires({
+//		"$this.isEmpty() == false",
+//		"$this.isSorted() == true"
+//		})
+//	@ensures({
+//		"$this.size == $old($this.size) - 1",
+//		"$this.heap[size] == null ",
+//		"$this.isSorted() == true"
+//		})
 	public ElementType remove() {
 		
 		ElementType dataRoot = heap[1].data;
@@ -185,16 +189,16 @@ implements PriorityQueue<ElementType, KeyType>{
 		}
 	}
 	//Should there be post conditions here?
-	@requires({"$this.isEmpty() == false"})
+//	@requires({"$this.isEmpty() == false"})
 	public  ElementType min() {
 		
 		return heap[1].data;
 	}
 	
-	@invariant({
-		"$this.key != null"
-	})
-	private static class Node<Data,Key>{
+//	@invariant({
+//		"$this.key != null"
+//	})
+	public static class Node<Data,Key>{
 		
 		private Data data;
 		private Key key;
@@ -202,6 +206,21 @@ implements PriorityQueue<ElementType, KeyType>{
 		public Node(Data data,Key key) {
 			this.data = data;
 			this.key = key;
+		}
+		public Data getData(){
+			return this.data;
+		}
+		public void setData(Data newData){
+			this.data = newData;
+		}
+		public Key getKey(){
+			return this.key;
+		}
+		public void setKey(Data newKey){
+			this.data = newKey;
+		}
+		public boolean equals(Node<Data,Key> otherNode) {
+			return this.key.equals(otherNode.key) && this.data.equals(otherNode.data);
 		}
 	}
 }
