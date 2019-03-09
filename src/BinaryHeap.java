@@ -55,11 +55,13 @@ implements PriorityQueue<ElementType, KeyType>{
 	
 	@requires({
 		"key != null",
-		"$this.isFull() == false"
+		"$this.isFull() == false",
+		"$this.isSorted() == true"
 		})
 	@ensures({
 		"$this.size == $old($this.size) + 1",
-		//"$this.contains(new Node<>(el,key)) == true "
+		"$this.heap[size] != null ",
+		"$this.isSorted() == true"
 		})
 	public void insert(ElementType el,KeyType key){
 		
@@ -83,17 +85,26 @@ implements PriorityQueue<ElementType, KeyType>{
 		return;
 	}
 	
-//	private boolean contains(Node<ElementType, KeyType> InputNode) {
-//		for(Node<ElementType, KeyType> node: heap) {
-//			if(node != null) {
-//				if(node.key.compareTo(InputNode.key) == 0 && node.data.compareTo(InputNode.data)==0 ) {
-//					return true;
-//				}
-//			}
-//		}
-//		return false;
-//	}
-
+	@requires({"true"})
+	@ensures({"$this.result == true"})
+	public boolean isSorted(){
+		for(int i = 1; i< heap.length;i++){
+			if(heap[i] == null) {
+				break;
+			}
+			else {
+				if(heap[i*2] != null|| heap[i].key.compareTo(heap[i*2].key)>0) {
+					return false;
+				}
+				if(heap[(i*2)+1] != null || heap[i].key.compareTo(heap[(i*2)+1].key)>0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	
 	public boolean isEmpty() {
 		return this.size==0;
 	}
@@ -101,19 +112,29 @@ implements PriorityQueue<ElementType, KeyType>{
 	public boolean isFull() {
 		return this.size==this.capacity-1;
 	}
-	
+	@requires({"$this.isFull() == true"})
+	@ensures({"$this.heap.length == $old(this.heap.length)*2"})
 	private void doubleSizeArray(){
 		
 		Node<ElementType, KeyType>[] newArray = (Node<ElementType, KeyType>[]) new Node <?,?>[capacity * 2];
 		
 		for(int i = 0;i<= heap.length;i++) {
-			newArray[0] = this.heap[0];
+			newArray[i] = this.heap[i];
+			this.heap[i] = null;
 		}
 		this.heap = newArray;
 		
 		return;
 	}
-	
+	@requires({
+		"$this.isEmpty() == false",
+		"$this.isSorted() == true"
+		})
+	@ensures({
+		"$this.size == $old($this.size) - 1",
+		"$this.heap[size] == null ",
+		"$this.isSorted() == true"
+		})
 	public ElementType remove() {
 		
 		ElementType dataRoot = heap[1].data;
@@ -163,12 +184,16 @@ implements PriorityQueue<ElementType, KeyType>{
 			bubbleDown(minIndex);
 		}
 	}
+	//Should there be post conditions here?
+	@requires({"$this.isEmpty() == false"})
 	public  ElementType min() {
 		
 		return heap[1].data;
 	}
 	
-	
+	@invariant({
+		"$this.key != null"
+	})
 	private static class Node<Data,Key>{
 		
 		private Data data;
