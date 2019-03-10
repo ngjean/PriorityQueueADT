@@ -1,6 +1,12 @@
 import be.ac.ua.ansymo.adbc.annotations.ensures;
 import be.ac.ua.ansymo.adbc.annotations.invariant;
 import be.ac.ua.ansymo.adbc.annotations.requires;
+/*
+ * Array based implementation of binary heap. First element at index 1.
+ * Respects FIFO scheme for nodes with identical keys.
+ * 
+ */
+
 
 //@invariant ({
 //	"$this.capacity>=1",
@@ -16,19 +22,12 @@ implements PriorityQueue<ElementType, KeyType>{
 	private int size;
 	private int capacity;
 	
-//	@requires({"true"})
-//	@ensures({"$this.heap != null"})
-	public BinaryHeap() {
-		
-		this(10);
-	}
-	
-//	@requires({"capacity >= 2"})
+//	@requires({"capacity >= 1"})
 //	@ensures({"$this.heap != null"})
 	public BinaryHeap(int capacity) {
 		
 		this.capacity = capacity;
-		this.heap = (Node<ElementType, KeyType>[]) new Node <?,?>[capacity+1];
+		this.heap = (Node<ElementType, KeyType>[]) new Node <?,?>[10];
 		this.size = 0;
 		
 	}

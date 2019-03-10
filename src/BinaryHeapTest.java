@@ -3,6 +3,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+/*
+ * Note that insertions beyond capacity is allowed here. Contracts are not enforced
+ * in this file. This file's purpose is to test that methods of the binary heap
+ * are working properly. Contracts should be tested with another driver.
+ */
 
 public class BinaryHeapTest {
 	
@@ -18,18 +23,12 @@ public class BinaryHeapTest {
 	@Test
 	public void inserTtest() {
 		
-		assertEquals(testHeap.getHeap().length,3);
+		assertEquals(testHeap.getHeap().length,10);
 		assertEquals(testHeap.getSize(),0);
 		
 		testHeap.insert("whatever3",3);
 		testHeap.insert("whatever1",1);
-		testHeap.insert("whatever6",6);
-		
-		//verifies that the size of inner array has been doubled
-		//given that capacity (in constructor argument) has been exceeded
-		
-		assertEquals(testHeap.getHeap().length,6);
-		
+		testHeap.insert("whatever6",6);		
 		testHeap.insert("whatever4",4);
 		testHeap.insert("whatever33",3);
 		
@@ -40,6 +39,12 @@ public class BinaryHeapTest {
 		assertEquals(testHeap.getHeap()[4].getData(),"whatever4");
 		assertEquals(testHeap.getHeap()[5].getData(),"whatever33");
 		assertEquals(testHeap.getSize(),5);
+		
+		for(int i = 1 ;i <= 5;i ++) {
+			System.out.println(i);
+			testHeap.insert(" ",i);
+		}
+		assertEquals(testHeap.getHeap().length, 20);
 	}
 	@Test
 	public void removeTest() {
