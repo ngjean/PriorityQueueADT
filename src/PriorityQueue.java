@@ -1,3 +1,4 @@
+package src;
 
 public interface PriorityQueue<ElementType, KeyType extends Comparable<KeyType>> {
 	

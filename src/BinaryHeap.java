@@ -1,3 +1,5 @@
+package src;
+
 import be.ac.ua.ansymo.adbc.annotations.ensures;
 import be.ac.ua.ansymo.adbc.annotations.invariant;
 import be.ac.ua.ansymo.adbc.annotations.requires;
@@ -8,12 +10,12 @@ import be.ac.ua.ansymo.adbc.annotations.requires;
  */
 
 
-//@invariant ({
-//	"$this.capacity>=1",
-//	"$this.size >=0 ",
-//	"$this.size <= $this.capacity",
-//	"$this.heap[0] == null"
-//	})
+@invariant ({
+	"$this.capacity>=1",
+	"$this.size >=0 ",
+	"$this.size <= $this.capacity",
+	"$this.heap[0] == null"
+	})
 
 public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>>
 implements PriorityQueue<ElementType, KeyType>{
@@ -22,8 +24,8 @@ implements PriorityQueue<ElementType, KeyType>{
 	private int size;
 	private int capacity;
 	
-//	@requires({"capacity >= 1"})
-//	@ensures({"$this.heap != null"})
+	@requires({"capacity >= 1"})
+	@ensures({"$this.heap != null"})
 	public BinaryHeap(int capacity) {
 		
 		this.capacity = capacity;
@@ -32,36 +34,34 @@ implements PriorityQueue<ElementType, KeyType>{
 		
 	}
 	
-//	@requires({"true"})
-	//@ensures({"$this.result>=0"})
+	@requires({"true"})
+	@ensures({"$this.result>=0"})
 	public int getSize(){
-		
 		return this.size;
 	}
 	
-//	@requires({"true"})
-	//@ensures({"$this.result>=2"})
+	@requires({"true"})
+	@ensures({"$this.result>=2"})
 	public int getCapacity(){
-		
 		return this.capacity;
 	}
-//	@requires({"true"})
-//	@ensures({"$this.result != null"})
+
+	@requires({"true"})
+	@ensures({"$this.result != null"})
 	public Node<ElementType, KeyType>[] getHeap() {
-		
 		return this.heap;
 	}
 	
-//	@requires({
-//		"key != null",
-//		"$this.isFull() == false",
-//		"$this.isSorted() == true"
-//		})
-//	@ensures({
-//		"$this.size == $old($this.size) + 1",
-//		"$this.heap[size] != null ",
-//		"$this.isSorted() == true"
-//		})
+	@requires({
+		"key != null",
+		"$this.isFull() == false",
+		"$this.isSorted() == true"
+		})
+	@ensures({
+		"$this.size == $old($this.size) + 1",
+		"$this.heap[size] != null ",
+		"$this.isSorted() == true"
+		})
 	public void insert(ElementType el,KeyType key){
 		
 		Node<ElementType, KeyType> newNode = new Node(el,key);
@@ -70,12 +70,14 @@ implements PriorityQueue<ElementType, KeyType>{
 			++size;
 			return;
 		}
-		
-		if(this.size == heap.length-1) {
-			
+
+		// if the size of the heap has reached its limit, double the size:
+		if(this.size == heap.length - 1) {
 			doubleSizeArray();
 		}
+
 		int insertPosition = ++size;
+
 		while(newNode.getKey().compareTo(heap[insertPosition/2].getKey())<0) {
 			heap[insertPosition] = heap[insertPosition/2];
 			insertPosition = insertPosition/2;
@@ -84,16 +86,15 @@ implements PriorityQueue<ElementType, KeyType>{
 			}
 		}
 		
-		heap[insertPosition]= newNode;
+		heap[insertPosition] = newNode;
 		
 		return;
 	}
 	
-//	@requires({"true"})
-//	@ensures({"$this.result == true"})
+	@requires({"true"})
+	@ensures({"$this.result == true"})
 	public boolean isSorted(){
 		for(int i = 1; i< heap.length;i++){
-			
 			if(heap[i] == null) {
 				break;
 			}
@@ -119,8 +120,10 @@ implements PriorityQueue<ElementType, KeyType>{
 	public boolean isFull() {
 		return this.size==this.capacity;
 	}
-//	@requires({"$this.isFull() == true"})
-//	@ensures({"$this.heap.length == $old(this.heap.length)*2"})
+
+	@requires({"$this.isFull() == true"})
+	@ensures({"$this.heap.length == $old(this.heap.length)*2"})
+
 	private void doubleSizeArray(){
 		
 		Node<ElementType, KeyType>[] newArray = (Node<ElementType, KeyType>[]) new Node <?,?>[this.heap.length * 2];
@@ -131,15 +134,16 @@ implements PriorityQueue<ElementType, KeyType>{
 		
 		return;
 	}
-//	@requires({
-//		"$this.isEmpty() == false",
-//		"$this.isSorted() == true"
-//		})
-//	@ensures({
-//		"$this.size == $old($this.size) - 1",
-//		"$this.heap[size] == null ",
-//		"$this.isSorted() == true"
-//		})
+
+	@requires({
+		"$this.isEmpty() == false",
+		"$this.isSorted() == true"
+		})
+	@ensures({
+		"$this.size == $old($this.size) - 1",
+		"$this.heap[size] == null ",
+		"$this.isSorted() == true"
+		})
 	public ElementType remove() {
 		
 		ElementType dataRoot = heap[1].data;
@@ -154,7 +158,6 @@ implements PriorityQueue<ElementType, KeyType>{
 	}
 		
 	private void bubbleDown(int n) {
-		
 		int leftChildIndex = n*2, rightChildIndex = (n*2)+1, minIndex;
 		Node<ElementType, KeyType> tempData;
 		
@@ -171,9 +174,7 @@ implements PriorityQueue<ElementType, KeyType>{
 		else {
 			
 			if(heap[leftChildIndex].key.compareTo(heap[rightChildIndex].key)<= 0){
-				
 				minIndex = leftChildIndex;
-				
 			}
 			else {
 				
@@ -181,7 +182,6 @@ implements PriorityQueue<ElementType, KeyType>{
 			}
 		}
 		if(heap[n].key.compareTo(heap[minIndex].key) >= 0) {
-			
 			tempData = heap[n];
 			heap[n] = heap[minIndex];
 			heap[minIndex] = tempData;
@@ -189,16 +189,16 @@ implements PriorityQueue<ElementType, KeyType>{
 			bubbleDown(minIndex);
 		}
 	}
+
 	//Should there be post conditions here?
-//	@requires({"$this.isEmpty() == false"})
+	@requires({"$this.isEmpty() == false"})
 	public  ElementType min() {
-		
 		return heap[1].data;
 	}
 	
-//	@invariant({
-//		"$this.key != null"
-//	})
+	@invariant({
+		"$this.key != null"
+	})
 	public static class Node<Data,Key>{
 		
 		private Data data;
