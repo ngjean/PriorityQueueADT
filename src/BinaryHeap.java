@@ -3,6 +3,11 @@ package src;
 import be.ac.ua.ansymo.adbc.annotations.ensures;
 import be.ac.ua.ansymo.adbc.annotations.invariant;
 import be.ac.ua.ansymo.adbc.annotations.requires;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 /*
  * Array based implementation of binary heap. First element at index 1.
  * Respects FIFO scheme for nodes with identical keys.
@@ -203,10 +208,14 @@ implements PriorityQueue<ElementType, KeyType>{
 		
 		private Data data;
 		private Key key;
+		// should the timeStamp be tied to the node or to the insert action? Since we technically can insert
+		// the same node multiple times...
+		private String timeStamp; //timestamp to help us ensure FIFO
 		
 		public Node(Data data,Key key) {
 			this.data = data;
 			this.key = key;
+			this.timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 		}
 		public Data getData(){
 			return this.data;
@@ -219,6 +228,12 @@ implements PriorityQueue<ElementType, KeyType>{
 		}
 		public void setKey(Data newKey){
 			this.data = newKey;
+		}
+		public String getTimeStamp(){
+			return this.timeStamp;
+		}
+		public void setTimeStamp(String timeStamp){
+			this.timeStamp = timeStamp;
 		}
 		public boolean equals(Node<Data,Key> otherNode) {
 			return this.key.equals(otherNode.key) && this.data.equals(otherNode.data);
