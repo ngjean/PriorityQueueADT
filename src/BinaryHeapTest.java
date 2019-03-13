@@ -41,7 +41,6 @@ public class BinaryHeapTest {
 		assertEquals(testHeap.getSize(),5);
 		
 		for(int i = 1 ;i <= 5;i ++) {
-			System.out.println(i);
 			testHeap.insert(" ",i);
 		}
 		assertEquals(testHeap.getHeap().length, 20);
@@ -77,6 +76,27 @@ public class BinaryHeapTest {
 		
 		assertNull(testHeap.getHeap()[0]);
 		
+	}
+	
+	@Test
+	public void removeTestFIFO(){
+		testHeap.insert("whatever11",1);
+		testHeap.insert("whatever66",6);		
+		testHeap.insert("whatever44",4);
+		
+		for(int i = 1 ;i <= 10;i ++) {
+			testHeap.insert("whatever"+ i, 3);
+		}
+		testHeap.insert("whatever22", 2);
+		
+		assertEquals(testHeap.remove(),"whatever11");
+		assertEquals(testHeap.remove(),"whatever22");
+		
+		for(int i = 1 ;i <= 10;i ++) {
+			assertEquals(testHeap.remove(),"whatever"+ i);
+		}
+		assertEquals(testHeap.remove(),"whatever44");
+		assertEquals(testHeap.remove(),"whatever66");
 	}
 	
 	@Test

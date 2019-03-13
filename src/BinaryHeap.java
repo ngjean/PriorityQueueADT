@@ -1,6 +1,7 @@
 import be.ac.ua.ansymo.adbc.annotations.ensures;
 import be.ac.ua.ansymo.adbc.annotations.invariant;
 import be.ac.ua.ansymo.adbc.annotations.requires;
+import java.util.HashMap;
 /*
  * Array based implementation of binary heap. First element at index 1.
  * Respects FIFO scheme for nodes with identical keys.
@@ -18,6 +19,7 @@ import be.ac.ua.ansymo.adbc.annotations.requires;
 public class BinaryHeap<ElementType, KeyType extends Comparable<KeyType>>
 implements PriorityQueue<ElementType, KeyType>{
 	
+	private HashMap<KeyType, Integer> hashMap;
 	private Node<ElementType, KeyType>[] heap;
 	private int size;
 	private int capacity;
@@ -26,6 +28,7 @@ implements PriorityQueue<ElementType, KeyType>{
 //	@ensures({"$this.heap != null"})
 	public BinaryHeap(int capacity) {
 		
+		this.hashMap = new HashMap<KeyType, Integer>();
 		this.capacity = capacity;
 		this.heap = (Node<ElementType, KeyType>[]) new Node <?,?>[10];
 		this.size = 0;
@@ -65,6 +68,16 @@ implements PriorityQueue<ElementType, KeyType>{
 	public void insert(ElementType el,KeyType key){
 		
 		Node<ElementType, KeyType> newNode = new Node(el,key);
+		Integer hashValue = hashMap.get(key);
+		if( hashValue == null) {
+			hashMap.put(key, 0);
+			newNode.copyID = 0;
+		}
+		else {
+			hashMap.put(key, hashValue +1);
+			newNode.setCopyID(hashMap.get(key));
+		}
+		
 		if(this.size==0) {
 			heap[1] = newNode;
 			++size;
@@ -76,7 +89,7 @@ implements PriorityQueue<ElementType, KeyType>{
 			doubleSizeArray();
 		}
 		int insertPosition = ++size;
-		while(newNode.getKey().compareTo(heap[insertPosition/2].getKey())<0) {
+		while(newNode.key.compareTo(heap[insertPosition/2].key)<0) {
 			heap[insertPosition] = heap[insertPosition/2];
 			insertPosition = insertPosition/2;
 			if(insertPosition==1){
@@ -142,6 +155,33 @@ implements PriorityQueue<ElementType, KeyType>{
 //		})
 	public ElementType remove() {
 		
+
+		KeyType rootKey = heap[1].key;
+		int numberCopiesRoot = hashMap.get(rootKey);
+		
+		if(numberCopiesRoot == 0) {
+			hashMap.remove(rootKey);
+		}
+		else {
+			
+			int copiesFound = 0;
+			for(int i=2;i<heap.length;i++) {
+				if(heap[i].key.compareTo(rootKey)== 0) {
+					if(heap[i].copyID == 0) {
+						Node<ElementType, KeyType>temp = heap[i];
+						heap[i] = heap[1];
+						heap[1] = temp;
+						temp = null;
+					}
+					copiesFound++;
+					heap[i].copyID --;
+				}
+				if(copiesFound == numberCopiesRoot)
+					break;
+			}
+			this.hashMap.put(rootKey, numberCopiesRoot - 1);
+		}
+		
 		ElementType dataRoot = heap[1].data;
 		heap[1] = heap[this.size];
 		heap[this.size] = null;
@@ -203,11 +243,22 @@ implements PriorityQueue<ElementType, KeyType>{
 		
 		private Data data;
 		private Key key;
+		private int copyID;
 		
 		public Node(Data data,Key key) {
 			this.data = data;
 			this.key = key;
+			this.copyID = 0;
+			
 		}
+		
+		public int getCopyID(){
+			return this.copyID;
+		}
+		public void setCopyID(int newCopyID){
+			this.copyID = newCopyID;
+		}
+		
 		public Data getData(){
 			return this.data;
 		}
