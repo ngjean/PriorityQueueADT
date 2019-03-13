@@ -229,8 +229,10 @@ implements PriorityQueue<ElementType, KeyType>{
 			bubbleDown(minIndex);
 		}
 	}
-	//Should there be post conditions here?
 //	@requires({"$this.isEmpty() == false"})
+//	@ensures({"	$result != null",
+//				"$this.getSize() == $old($this.getSize())"
+//			})
 	public  ElementType min() {
 		
 		return heap[1].data;
